@@ -60,59 +60,25 @@ choisi.
 
 ### 2. Comparaison Méthodes
 
-#### 2.(a) Partitionnement
+#### 2.(a)  Proposez un partitionnement des données en données d’entraînement et données de test.
 - Split stratifié : 70% train, 30% test (`train_test_split`).
 
-#### 2.(b) Heatmaps
+#### 2.(b) Présentez un graphique des scores d’entraînement, et un graphique des scores de test, pour tous les paramétrages de l’espace de recherche, sous forme de heatmap.
 - Calcul accuracy train/test pour chaque paramètre.
 - Visualisation avec `seaborn.heatmap`.
 - Projection PCA : 20 classes en amas distincts (variance ~50%).
 
-#### 2.(c) Comparaison 8 Méthodes
-Méthodes testées :
-1. Bruteforce
-2. Randomize (30%)
-3. Halving (5 steps)
-4. Bayesian (manuelle)
-5. GridSearchCV
-6. RandomizedSearchCV
-7. HalvingGridSearchCV
-8. gp_minimize (skopt)
+#### 2.(c) Appliquez les fonctions suivantes pour le réglage des hyperparamètres, et commentez les résultats :
+- bruteforce_optimisation
+- randomize_optimisation avec sample_percent = 30
+- halving_optimisation avec s_splitting = 5
+- bayesian_optimisation avec s_size = 5 et n_iter = 100
+- model_selection.GridSearchCV avec scoring=’accuracy’
+- model_selection.RandomizedSearchCV avec n_iter = 60etscoring=’accuracy’
+- model_selection.HalvingGridSearchCV avec factor = 5etscoring=’accuracy’
+- skopt.gp_minimize avec comme modèle de score 1- accuracy
 
-- Mesure temps, meilleurs params, score CV, accuracy test.
-- Résultats : Toutes atteignent >99% accuracy ; bruteforce lent, autres plus efficaces.
+#### 2.(d)  En faisant varier le partitionnement des données et les paramètres des fonctions de réglage des hyperparamètres, comparez les performances des fonctions en termes de temps de calcul, et de capacité à trouver un paramétrage optimal. Commentez les résultats.
 
 ## Conclusion
 TP démontre l'importance du tuning. Méthodes bayésiennes et halving équilibrent efficacité et performance sur ce dataset simple avec forte séparabilité.
-— elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart
-types) de tous les paramétrages;
-— elle trouve la moyenne maximum prédite max_pred_moy;
-— elle échantillonne s_size paramétrages;
-— elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart
-types) des paramétrages échantillonnés;
-— les résultats de cette prédiction sont transformés en une distribution de probabilité
-en utilisant la fonction de distribution cumulative (cdf), comme suit : probabilite
-= cdf((moyennes- max_pred_moy) / (ecart_types + 10−6));
-— le paramétrage de probabilité maximum est choisi : max_param;
-— max_param est ajouté à l’échantillon E, puis E est utilisé pour ré-estimer la fonction
-d’approximation.
-Après la dernière itération, le paramétrage de score maximum dans l’échantillon E est
-choisi.
-
-2. Comparaison de fonctions :
-(a) Proposez un partitionnement des données en données d’entraînement et données de test.
-(b) Présentez un graphique des scores d’entraînement, et un graphique des scores de test,
-pour tous les paramétrages de l’espace de recherche, sous forme de heatmap.
-(c) Appliquez les fonctions suivantes pour le réglage des hyperparamètres, et commentez les
-résultats :
-— bruteforce_optimisation
-— randomize_optimisation avec sample_percent = 30
-— halving_optimisation avec s_splitting = 5
-— bayesian_optimisation avec s_size = 5 et n_iter = 100
-— model_selection.GridSearchCV avec scoring=’accuracy’
-— model_selection.RandomizedSearchCV avec n_iter = 60etscoring=’accuracy’
-— model_selection.HalvingGridSearchCV avec factor = 5etscoring=’accuracy’
-— skopt.gp_minimize avec comme modèle de score 1- accuracy
-(d) En faisant varier le partitionnement des données et les paramètres des fonctions de ré
-glage des hyperparamètres, comparez les performances des fonctions en termes de temps
-de calcul, et de capacité à trouver un paramétrage optimal. Commentez les résultats.

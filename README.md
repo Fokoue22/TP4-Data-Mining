@@ -46,18 +46,14 @@ qui prend les mêmes paramètres que la fonction `bruteforce_optimisation,` plus
 #### 1.(e)  une fonction `bayesian_optimisation(class_model, grille_param, X, y, s_size, n_iter)`
 qui prend les mêmes paramètres que la fonction bruteforce_optimisation, plus le nombre de paramétrages échantillonnés à chaque itération du processus `(exemple : s_size = 5)`, et le nombre d’itération de la fonction `(exemple : n_iter = 100)`. L’optimisation bayésienne utilise une fonction d’approximation pour estimer la fonction de score par échantillonnage. Dans ce TP, la fonction d’approximation utilisée est le modèle de régression `sklearn.gaussian_process.GaussianProcessRegressor`. La prédiction avec ce modèle retourne un vecteur des moyennes et un vector des écart-types des distributions prédictives à chaque donnée. La méthode commence par générer un échantillon `E` de `s_size` paramétrages qu’elle utilise pour estimer (fit) la fonction d’approximation.
 Puis, elle répète n_iter fois le processus suivant :
-— elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart
-types) de tous les paramétrages;
-— elle trouve la moyenne maximum prédite max_pred_moy;
-— elle échantillonne s_size paramétrages;
-— elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart
-types) des paramétrages échantillonnés;
-— les résultats de cette prédiction sont transformés en une distribution de probabilité
-en utilisant la fonction de distribution cumulative (cdf), comme suit : probabilite
-= cdf((moyennes- max_pred_moy) / (ecart_types + 10−6));
-— le paramétrage de probabilité maximum est choisi : max_param;
-— max_param est ajouté à l’échantillon E, puis E est utilisé pour ré-estimer la fonction
-d’approximation.
+ - elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart types) de tous les paramétrages;
+ - elle trouve la moyenne maximum prédite max_pred_moy;
+ - elle échantillonne s_size paramétrages;
+ - elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart types) des paramétrages échantillonnés;
+ - les résultats de cette prédiction sont transformés en une distribution de probabilité en utilisant la fonction de distribution cumulative (cdf), comme suit : probabilite
+ - cdf((moyennes- max_pred_moy) / (ecart_types + 10−6));
+ - le paramétrage de probabilité maximum est choisi : max_param;
+ - max_param est ajouté à l’échantillon E, puis E est utilisé pour ré-estimer la fonction d’approximation.
 Après la dernière itération, le paramétrage de score maximum dans l’échantillon E est
 choisi.
 

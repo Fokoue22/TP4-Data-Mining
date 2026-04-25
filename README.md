@@ -37,19 +37,30 @@ qui prend en paramètre une matrice X de données, un vecteur y de classes corre
 qui prend en paramètre un modèle de classification, une grille de paramètres `(exemple : grille_param= {’n_neighbors’: range(1,11), ’p’: range(1,6)})`, une matrice X de données, et un vecteur y de classes correspondant. La fonction explore tout l’espace de recherche des paramétrages et retourne un seul paramétrage de score maximal `(exemple : max_params = {’n_neighbors’: 10, ’p’: 5})`.
 
 #### 1.(c)  une fonction `randomize_optimisation(class_model, grille_param, X, y, sample_percent)`
-Échantillonnage aléatoire (ex. 30%).
-- Sélectionne `sample_percent` de la grille.
-- Évalue et retourne meilleurs params.
+qui prend les mêmes paramètres que la fonction bruteforce_optimisation, plus le pourcentage de paramètres échantillonnés `sample_percent (exemple : sample_percent = 30 )`. La fonction explore uniquement l’espace de recherche échantillonné des paramètrages et retourne un seul paramétrage de score maximal dans cet espace.
 
 #### 1.(d)  une fonction `halving_optimisation(class_model, grille_param, X, y, n_splitting)`
-Successive Halving (ex. 5 étapes).
-- Réduit candidats et augmente données progressivement.
-- Retourne paramètre final.
+qui prend les mêmes paramètres que la fonction `bruteforce_optimisation,` plus le nombre de parties dans lequel les données et les paramétrages sont divisés `(exemple : n_splitting = 5)`. La fonction explore tout l’espace de recherche des paramètres de `taille P`, puis un epace de `taille P × (n_splitting- 1)/n_splitting, puis P × (n_splitting- 2)/n_splitting, etc.,` jusqu’à ne conserver qu’un paramétrage. De même, elle commence avec un échantillon des données de `taille N × 1/n_splitting, N × 2/n_splitting, etc.,` jusqu’à `N × n_splitting/n_splitting `qui correspond à `100%` des données. Elle retourne le seul paramétrage conservé à la fin.
+
 
 #### 1.(e)  une fonction `bayesian_optimisation(class_model, grille_param, X, y, s_size, n_iter)`
-Optimisation bayésienne manuelle.
-- Utilise `GaussianProcessRegressor` + fonction d'acquisition.
-- Itère pour améliorer l'estimation.
+qui prend les mêmes paramètres que la fonction bruteforce_optimisation, plus le nombre de paramétrages échantillonnés à chaque itération du processus `(exemple : s_size = 5)`, et le nombre d’itération de la fonction `(exemple : n_iter = 100)`. L’optimisation bayésienne utilise une fonction d’approximation pour estimer la fonction de score par échantillonnage. Dans ce TP, la fonction d’approximation utilisée est le modèle de régression `sklearn.gaussian_process.GaussianProcessRegressor`. La prédiction avec ce modèle retourne un vecteur des moyennes et un vector des écart-types des distributions prédictives à chaque donnée. La méthode commence par générer un échantillon `E` de `s_size` paramétrages qu’elle utilise pour estimer (fit) la fonction d’approximation.
+Puis, elle répète n_iter fois le processus suivant :
+— elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart
+types) de tous les paramétrages;
+— elle trouve la moyenne maximum prédite max_pred_moy;
+— elle échantillonne s_size paramétrages;
+— elle utilise la fonction d’approximation pour prédire les scores (moyennes et écart
+types) des paramétrages échantillonnés;
+— les résultats de cette prédiction sont transformés en une distribution de probabilité
+en utilisant la fonction de distribution cumulative (cdf), comme suit : probabilite
+= cdf((moyennes- max_pred_moy) / (ecart_types + 10−6));
+— le paramétrage de probabilité maximum est choisi : max_param;
+— max_param est ajouté à l’échantillon E, puis E est utilisé pour ré-estimer la fonction
+d’approximation.
+Après la dernière itération, le paramétrage de score maximum dans l’échantillon E est
+choisi.
+
 
 ### 2. Comparaison Méthodes
 
